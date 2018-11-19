@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <title>Aerobike</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/libs/ammo.js"></script>
+    <script src="js/libs/zepto.min.js"></script>
+    <script src="js/libs/three.min.js"></script>
+    <script src="js/libs/OrbitControls.js"></script>
+    <script src="js/libs/CSS3DRenderer.js"></script>
+    <script src="js/libs/Projector.js"></script>
+    <script src="js/libs/SceneLoader.js"></script>
+    <script src="js/libs/MorphAnimMesh.js"></script>
+    <script src="js/libs/ColladaAnimation.js"></script>
+    <script src="js/libs/ColladaAnimationHandler.js"></script>
+    <script src="js/libs/ColladaKeyFrameAnimation.js"></script>
+    <script src="js/libs/ColladaLoader.js"></script>
+    <script src="js/libs/ShaderTerrain.js"></script>
+    <script src="js/libs/NormalMapShader.js"></script>
+    <script src="js/keyboard_state.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/models.js"></script>
+    <!--<script src="js/SymetricPlaneGeometry.js"></script>-->
+</head>
+
+<body>
+    <!-- Render -->
+    <div id="scene_container"></div>
+    <!-- Progress -->
+    <div id="progress" hidden>
+        <div id="progress_bar" class="shadow">
+            <div id="bar" class="shadow">
+            </div>
+        </div>
+    </div>
+    <!-- Start -->
+    <div id="start_screen">
+        <div id="start_image_box"></div>
+        <div id="start_menu">
+            <div class="garage_img_bt" id="start_garage_img_bt"></div>
+            <div class="fast_game_img_bt" id="start_fast_game_img_bt"></div>
+        </div>
+    </div>
+    <!-- Garage -->
+    <div id="garage_screen" hidden>
+        <div id="bike_info">
+            <style>
+                #bike_info {
+                    position: absolute;
+                    width: 60%;
+                }
+            </style>
+        </div>
+        <div id="prev_bike_box">
+            <style>
+                #prev_bike_box {
+                    position: absolute;
+                    top: 50%;
+                    right: 20%;
+                    text-align: center;
+                }
+            </style>
+            <button id="prev_bike_btn">
+					<img id="prev_bike_img" src="images/icons/prev_bike.png">
+				</button>
+        </div>
+        <div id="next_bike_box">
+            <style>
+                #next_bike_box {
+                    position: absolute;
+                    top: 50%;
+                    left: 20%;
+                    text-align: center;
+                }
+            </style>
+            <button id="next_bike_btn">
+					<img id="next_bike_img" src="images/icons/next_bike.png">
+				</button>
+        </div>
+        <div id="garage_menu">
+            <button id="settings_btn">
+					<img id="settings_img" src="images/icons/settings.png">
+				</button>
+            <button id="rating_btn">
+					<img id="rating_img" src="images/icons/rating.png">
+				</button>
+            <button id="shop_btn">
+					<img id="shop_img" src="images/icons/shop.png">
+				</button>
+            <button id="chooce_partner_btn">
+					<img id="chooce_partner_img" src="images/icons/chooce_partner.png">
+				</button>
+            <div class="fast_game_img_bt" id="garage_fast_game_img_bt"></div>
+            <button id="about_btn">
+					<img id="about_img" src="images/icons/about.png">
+				</button>
+        </div>
+    </div>
+    <!-- Settings -->
+    <div id="settings_screen" hidden>
+        <div id="buttons_cfg_box">
+
+        </div>
+        <div id="intricacy_box">
+
+        </div>
+        <div id="settings_menu">
+            <style>
+                #settings_menu {
+                    position: absolute;
+                    bottom: 10%;
+                    width: 100%;
+                    text-align: center;
+                }
+            </style>
+            <button id="return_settings_btn">
+					<img id="return_settings_img" src="images/icons/return.png">
+				</button>
+        </div>
+    </div>
+    <!-- Rating -->
+    <div id="rating_screen" hidden>
+        <div id="rating_menu">
+            <style>
+                #rating_menu {
+                    position: absolute;
+                    bottom: 10%;
+                    width: 100%;
+                    text-align: center;
+                }
+            </style>
+            <button id="return_rating_btn">
+					<img id="return_rating_img" src="images/icons/return.png">
+				</button>
+        </div>
+    </div>
+    <!-- Shop -->
+    <div id="shop_screen" hidden>
+        <div id="shop_menu">
+            <style>
+                #shop_menu {
+                    position: absolute;
+                    bottom: 10%;
+                    width: 100%;
+                    text-align: center;
+                }
+            </style>
+            <button id="return_shop_btn">
+					<img id="return_shop_img" src="images/icons/return.png">
+				</button>
+        </div>
+    </div>
+    <!-- About -->
+    <div id="about_screen" hidden>
+        <div id="about_menu">
+            <style>
+                #about_menu {
+                    position: absolute;
+                    bottom: 10%;
+                    width: 100%;
+                    text-align: center;
+                }
+            </style>
+            <button id="return_about_btn">
+					<img id="return_about_img" src="images/icons/return.png">
+				</button>
+        </div>
+    </div>
+    <!-- Chooce partner -->
+    <div id="chooce_partner_screen" hidden>
+        <div id="chooce_partner_menu">
+            <style>
+                #chooce_partner_menu {
+                    position: absolute;
+                    bottom: 10%;
+                    width: 100%;
+                    text-align: center;
+                }
+            </style>
+            <button id="find_partners_btn">
+					<img id="find_partners_img" src="images/icons/find_partners.png">
+				</button>
+            <button id="game_btn">
+					<img id="game_img" src="images/icons/game.png">
+				</button>
+            <button id="return_chooce_partner_btn">
+					<img id="return_chooce_partner_img" src="images/icons/return.png">
+				</button>
+        </div>
+    </div>
+    <!-- Game -->
+    <div id="game_screen" hidden>
+        <div id="speedo_box"></div>
+        <div id="jet_thrust_box"></div>
+        <div id="racing_traffic_lights_box"></div>
+        <!--<div id="game_menu">-->
+        <!--<style>-->
+        <!--#game_menu {-->
+        <!--position: absolute;-->
+        <!--bottom: 10%;-->
+        <!--width: 100%;-->
+        <!--text-align: center;-->
+        <!--}-->
+        <!--</style>-->
+        <!--<button id="up_game_btn"><img id="up_game_img" src="images/icons/up.png"></button>-->
+        <!--<button id="down_game_btn"><img id="down_game_img" src="images/icons/down.png"></button>-->
+        <!--<button id="left_game_btn"><img id="left_game_img" src="images/icons/left.png"></button>-->
+        <!--<button id="right_game_btn"><img id="right_game_img" src="images/icons/right.png"></button>-->
+        <!--<div class="garage_img_bt" id="game_garage_img_bt"></div>-->
+        <!--</div>-->
+    </div>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

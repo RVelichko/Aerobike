@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+    <title>Viewer Aerobike</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/libs/three.min.js"></script>
+    <script src="js/libs/OrbitControls.js"></script>
+    <script src="js/libs/MorphAnimMesh.js"></script>
+    <script src="js/libs/ColladaAnimation.js"></script>
+    <script src="js/libs/ColladaAnimationHandler.js"></script>
+    <script src="js/libs/ColladaKeyFrameAnimation.js"></script>
+    <script src="js/libs/ColladaLoader.js"></script>
+    <script src="js/utils.js"></script>
+</head>
+<body>
+<div id="scene_container"></div>
+<div id="viewer_menu">
+    <style>
+        #viewer_menu {
+            position: absolute;
+            background: transparent;
+            bottom: 5%;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+    <label for="uploaded-file" type="button" class="txt_button"><i aria-hidden="true"></i><h>Загрузить файл</h></label>
+    <input type="file" id="uploaded-file" required="required" onchange="LoadModel(this.files)" style="display:none;"/>
+    <!--<button class="txt_button" id="model_load_btn">Загрузить модель</button>-->
+    <!--<input id="input_file" type="file" name="file_name" style='position:absolute;visibility:hidden;' multiple/>-->
+</div>
+<script>
+    var scope = this;
+    var X_VIEW_PERCENT = 0.9;
+    var Y_VIEW_PERCENT = 0.7;
+    var X_SCENE_ROTATION = 0.001;
+    var BASE_CAMERA_POS_PERCENT = 0.15;
+
+    var mouse_x = 0;
+    var mouse_x_on_mouse_down = 0;
+    var target_rotation = 0;
+    var target_rotation_on_mouse_down = 0;
+    var mouse_y = 0;
+    var base_y_cam_pos = window.innerHeight * BASE_CAMERA_POS_PERCENT;
+
+    var window_half_x = window.innerWidth * 0.5;
+    var window_half_y = window.innerHeight * 0.5;
+
+    var renderer;
+    var scene;
+    var camera;
+    var controls;
+    var clock = new THREE.Clock();
+    var animations = [];
+    var load_count = 0;
+    var files_count = 0;
+
+    function LoadModel(files) {
+        var url = 'models/';
+        files_count = files.length;
+        for (var i = 0; i < files.length; ++i) { //for multiple files
+            (function(file) {
+                var name = file.name;
+                var reader = new FileReader();
+                reader.onerror = function(e) {
+                    console.log('Error');
+                };
+                reader.onabort = function(e) {
+                    console.log('File read cancelled');
+                };
+                reader.onloadstart = function(e) {
+                    console.log('Start Loading...');
+                };
+                reader.onload = function(e) {
+                    var loader = new THREE.ColladaLoader();
+                    loader.options.convertUpAxis = true;
+                    loader.parse(e.target.result, function(collada) {
+                        var dae = collada.scene;
+                        daemesh = dae.children[0].children[0];
+                        daemesh.castShadow = true;
+                        daemesh.receiveShadow = true;
+                        dae.traverse(function(child) {
+                            if( child.material) {
+                                child.material.transparent = true;
+                                child.material.premultipliedAlpha = true;
+                                child.material.needsUpdate = true;
+                                child.material.alphaTest = 0.05;
+						        child.material.side = THREE.DoubleSide;
+						        child.materialshading = THREE.SmoothShading;
+                            }
+                            if (child instanceof THREE.SkinnedMesh) {
+                                animations[load_count] = new THREE.Animation(child, child.geometry.animation);
+                                camera.lookAt(child.position);
+                                ++load_count;
+                                if (load_count == files_count) {
+                                    for(var animation in animations) {
+                                        animations[animation].play();
+                                    }
+                                    console.log("play animations");
+                                }
+                            }
+                        });
+                        //dae.scale.x = dae.scale.y = dae.scale.z = 200;
+                        dae.position.x = -1;
+                        dae.updateMatrix();
+                        group.add(dae);
+                    }, url);
+                };
+                reader.readAsText(file);
+            })(files[i]);
+        }
+    }
+
+    function main() {
+        renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+        renderer.shadowMapEnabled   = true;
+        renderer.shadowMapSoft      = true;
+        //renderer.setClearColorHex( 0x000000, 1 );
+        renderer.setClearColor(0xA5A5A5);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.gammaInput = true;
+        renderer.gammaOutput = true;
+
+        var scene_container = document.getElementById("scene_container");
+        //var scene_container = new UTILS.CreateContainer("scene_container");
+        scene_container.appendChild(renderer.domElement);
+
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
+        camera.position.x = 3;
+//        camera.position.y = 3;
+//        camera.position.z = 4;
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        scene = new THREE.Scene();
+        group = new THREE.Group();
+        scene.add(group);
+        var light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(0, 1, 0).normalize();
+        scene.add(new THREE.AmbientLight(0xffffff));
+
+        document.addEventListener('mousedown', onDocumentMouseDown, false);
+        document.addEventListener('touchstart', onDocumentTouchStart, false);
+        document.addEventListener('touchmove', onDocumentTouchMove, false);
+
+        window.addEventListener('resize', onWindowResize, false);
+    } main();
+
+    function onDocumentMouseDown(e) {
+        e.preventDefault();
+        document.addEventListener('mousemove', onDocumentMouseMove, false);
+        document.addEventListener('mouseup', onDocumentMouseUp, false);
+        document.addEventListener('mouseout', onDocumentMouseOut, false);
+        mouse_x_on_mouse_down = e.clientX - window_half_x;
+        target_rotation_on_mouse_down = target_rotation;
+    }
+
+    function onDocumentMouseMove(e) {
+        mouse_x = e.clientX - window_half_x;
+        mouse_y = (e.clientY - window_half_y - base_y_cam_pos);
+        target_rotation = target_rotation_on_mouse_down + (mouse_x - mouse_x_on_mouse_down) * 0.02;
+    }
+
+    function onDocumentMouseUp(e) {
+        document.removeEventListener('mousemove', onDocumentMouseMove, false);
+        document.removeEventListener('mouseup', onDocumentMouseUp, false);
+        document.removeEventListener('mouseout', onDocumentMouseOut, false);
+    }
+
+    function onDocumentMouseOut(e) {
+        document.removeEventListener('mousemove', onDocumentMouseMove, false);
+        document.removeEventListener('mouseup', onDocumentMouseUp, false);
+        document.removeEventListener('mouseout', onDocumentMouseOut, false);
+    }
+
+    function onDocumentTouchStart(e) {
+        if (e.touches.length === 1) {
+            e.preventDefault();
+//                    mouse_x_on_mouse_down = e.touches[0].pageX - window_half_x;
+//                    target_rotation_on_mouse_down = target_rotation;
+        }
+    }
+
+    function onDocumentTouchMove(e) {
+        if (e.touches.length === 1) {
+            e.preventDefault();
+//                    mouse_x = e.touches[0].pageX - window_half_x;
+//                    target_rotation = target_rotation_on_mouse_down + (mouse_x - mouse_x_on_mouse_down) * 0.05;
+        }
+    }
+
+    function onWindowResize() {
+        mouse_y = 0;
+        window_half_y  = window.innerHeight * 0.5;
+        base_y_cam_pos = window.innerHeight * BASE_CAMERA_POS_PERCENT;
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        render();
+    }
+
+    function render() {
+//                group.rotation.y = group.rotation.y += (target_rotation - group.rotation.y) * 0.05;
+//                camera.position.y += (-(mouse_y * 0.01) * Y_VIEW_PERCENT - camera.position.y) * 0.1;
+//                camera.lookAt(scene.position);
+        renderer.render(scene, camera);
+        controls.update();
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        THREE.AnimationHandler.update(clock.getDelta());
+        render();
+    } animate();
+</script>
+</body>
+</html>

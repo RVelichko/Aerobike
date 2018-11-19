@@ -1,0 +1,168 @@
+/*!
+ * \brief  Набор стилей UI игры "Летающий мотоцикл".
+ * \author Rostislav Velichko. e: rostislav.vel@gmail.com
+ * \date   11.25.2015
+ */
+
+html,body {
+	background-color: #f0f0f0;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.progress_bar {
+	position: absolute;
+	background: transparent;
+	top :50%;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+#scene_container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	touch-action:none;
+}
+
+#start_screen {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	outline: 1px solid rgba(255, 255, 255, 0.75);
+	outline-offset: -10px;
+}
+
+#start_image_box {
+	position:relative;
+	top: 25%;
+	margin: 0 auto;
+	max-width: 50%;
+	max-height: 50%;
+	content: url('images/big_logo.png');
+}
+
+#start_menu {
+	position:relative;
+	top: 30%;
+	width: 90%;
+	margin: 0 auto;
+	text-align: center;
+	vertical-align: middle;
+	background-color: rgba(0, 0, 0, 0.2);
+	outline: 1px solid rgba(255, 255, 255, 0.75);
+	cursor: pointer;
+}
+
+#garage_screen {
+	position: absolute;
+	background: transparent;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	outline: 1px solid rgba(255, 255, 255, 0.75);
+	outline-offset: -10px;
+}
+
+#garage_menu {
+	position: relative;
+	top: 80%;
+	width: 90%;
+	margin: 0 auto;
+	text-align: center;
+	vertical-align: middle;
+	background-color: rgba(0, 0, 0, 0.2);
+	outline: 1px solid rgba(255, 255, 255, 0.75);
+	cursor: pointer;
+}
+
+.fast_game_img_bt {
+	display:inline-block;
+	min-width: 50px;
+	min-height: 50px;
+	width: 5%;
+	height: 5%;
+	content: url('images/icons/fast_game_bt.png');
+}
+
+.fast_game_img_bt:hover {
+	content: url('images/icons/fast_game_bt_select.png');
+}
+
+.fast_game_img_bt:active {
+	content: url('images/icons/fast_game_bt_down.png');
+}
+
+.garage_img_bt {
+	display:inline-block;
+	min-width: 50px;
+	min-height: 50px;
+	width: 5%;
+	height: 5%;
+	content: url('images/icons/garage_bt.png');
+}
+
+.garage_img_bt:hover {
+	content: url('images/icons/garage_bt_select.png');
+}
+
+.garage_img_bt:active {
+	content: url('images/icons/garage_bt_down.png');
+}
+
+.img_button {
+	background: transparent;
+	border: 0px;
+	padding: 0px;
+}
+
+.txt_button,input {
+	color: rgba(127, 255, 255, 0.75);
+	background: transparent;
+	outline: 1px solid rgba(127, 255, 255, 0.75);
+	border: 0px;
+	padding: 5px 10px;
+	cursor: pointer;
+}
+
+.txt_button:hover {
+	box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+	border: 1px solid rgba(127,255,255,0.75);
+}
+
+.txt_button:active {
+	color: #000000;
+	background-color: rgba(0,255,255,0.75);
+}
+
+.txt_button.number {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	font-size: 12px;
+	color: rgba(127,255,255,0.75);
+}
+
+.txt_button.symbol {
+	position: absolute;
+	top: 40px;
+	left: 0px;
+	right: 0px;
+	font-size: 60px;
+	font-weight: bold;
+	color: rgba(255,255,255,0.75);
+	text-shadow: 0 0 10px rgba(0,255,255,0.95);
+}
+
+.txt_button.details {
+	position: absolute;
+	bottom: 15px;
+	left: 0px;
+	right: 0px;
+	font-size: 12px;
+	color: rgba(127,255,255,0.75);
+}
